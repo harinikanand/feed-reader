@@ -27,9 +27,8 @@ $(function() {
             /* Check allFeeds array length is not 0*/
             expect(allFeeds.length).not.toBe(0);
         });
-        /* TODO: Write a test that loops through each feed
-         * in the allFeeds object and ensures it has a URL defined
-         * and that the URL is not empty.
+        /* Test loops through each feed in the allFeeds object
+         * and ensures it has a URL defined and that the URL is not empty.
          */
         it('all feeds have a URL', function() {
             for (var i = 0; i < allFeeds.length; ++i) {
@@ -41,9 +40,8 @@ $(function() {
         });
 
 
-        /* TODO: Write a test that loops through each feed
-         * in the allFeeds object and ensures it has a name defined
-         * and that the name is not empty.
+        /* Test loops through each feed in the allFeeds object and
+         * ensures it has a name defined and that the name is not empty.
          */
 
         it('all feeds have a Name', function() {
@@ -57,110 +55,102 @@ $(function() {
     });
 
 
-    /* TODO: Write a new test suite named "The menu" */
+    /* Test suite named "The menu" */
     describe('The menu', function() {
 
-        /* TODO: Write a test that ensures the menu element is
-         * hidden by default. You'll have to analyze the HTML and
-         * the CSS to determine how we're performing the
-         * hiding/showing of the menu element.
+        /* Test below ensures the menu element is
+         * hidden by default.
          */
         it('Menu is hidden by default', function() {
             /* Check the body has the menu-hidden div class which hides the menu */
-            expect($('body').attr('class')).toBe('menu-hidden');   
+            expect($('body').hasClass('menu-hidden')).toBeTruthy();
         });
-         /* TODO: Write a test that ensures the menu changes
+         /* Test below ensures the menu changes
           * visibility when the menu icon is clicked. This test
-          * should have two expectations: does the menu display when
+          * has two expectations: does the menu display when
           * clicked and does it hide when clicked again.
           */
         it('Menu visibility toggles when clicked on the menu icon', function() {
             /* Trigger a menu icon click*/
             $('.menu-icon-link').trigger('click');
             /* Check the body does not have div classes */
-            expect($('body').attr('class')).toBe('');
+            expect($('body').hasClass('menu-hidden')).toBeFalsy();
 
             /* Trigger a menu icon click*/
             $('.menu-icon-link').trigger('click');
             /* Check the body contains the menu-hidden div class */
-            expect($('body').attr('class')).toBe('menu-hidden');   
+            expect($('body').hasClass('menu-hidden')).toBeTruthy();
         });
     });
-    /* TODO: Write a new test suite named "Initial Entries" */
+    /* A new test suite named "Initial Entries" */
     describe('Initial Entries', function() {
-
+ 
         /* Invoke the loadFeed function to load the feed list of Udacity Blog */
         beforeEach( function(done) {
-            loadFeed(0, function() {
-                done();
-            });
+            loadFeed(0, done);
         });
 
-        /* TODO: Write a test that ensures when the loadFeed
-         * function is called and completes its work, there is at least
+        /* Below test ensures when the loadFeed function is called 
+         * and completes its work, there is at least
          * a single .entry element within the .feed container.
-         * Remember, loadFeed() is asynchronous so this test wil require
-         * the use of Jasmine's beforeEach and asynchronous done() function.
         */
-        it('loadFeed should result in atleast one entry', function(done){
+        it('loadFeed should result in atleast one entry', function(){
             /* Determine the number of .entry-link DOM elements */
             var entryLinksLength = $(".entry-link").length;
-            //console.log(entryLinksLength);
+
             /* Check the above length is not 0*/
-            expect(entryLinksLength).not.toEqual(0);
-            done();
+            expect(entryLinksLength).toBeGreaterThan(0);
         });
     });
 
-    /* TODO: Write a new test suite named "New Feed Selection"*/
+    /* A new test suite named "New Feed Selection"*/
     describe('New Feed Selection', function() {
-    var entryLinks_1;
+        var feedText1;
+        var feedText2;
 
         /* Invoke the loadFeed function to load the feed list of CSS Tricks, save the href links for
          * .entry-link DOM elements  followed by that invoke the loadFeed function to load the feed 
          * list for HTML5 Rocks*/
         beforeEach(function(done) {
             loadFeed(1, function() {
-                entryLinks_1 = $(".entry-link").attr('href'); 
-                loadFeed(2, function() { 
-                    done();
+                feedText1 = $('.feed').text(); 
+                loadFeed(2, function() {
+                   /* Now that feed for HTML5 rocks is loaded, obtain all the href links 
+                   * for .entry-link DOM elements 
+                   */
+                   feedText2 = $('.feed').text();;
+                   done();
                 });
             });
         });
 
-        /* TODO: Write a test that ensures when a new feed is loaded
+        /* Test ensures when a new feed is loaded
          * by the loadFeed function that the content actually changes.
-         * Remember, loadFeed() is asynchronous.
          */
-        it('New feed is loaded when loadFeed is called with a different feed source', function(done) {
-            /* Now that feed for HTML5 rocks is loaded, obtain all the href links for .entry-link DOM elements */
-            var entryLinks_2 = $(".entry-link").attr('href');
+        it('New feed is loaded when loadFeed is called with a different feed source', function() {
             /* check the two href links should not match*/
-            expect(entryLinks_2).not.toEqual(entryLinks_1);
-            //console.log(entryLinks_1);
-            //console.log(entryLinks_2);
-            done();
+            expect(feedText2).not.toEqual(feedText1);
         });
     });
 
     /* Additional Tests */
-    /* TODO: Write a new test suite named "Header Title"*/
+    /* A new test suite named "Header Title"*/
     describe('Header Title', function() {
+        var headerTitle;
 
         /* Invoke the loadFeed function to load data for Linear Digressions*/
         beforeEach( function(done) {
             loadFeed(3, function() {
-                done();
+                /* Obtain the header title shown on the page*/
+                headerTitle = $('.header-title').text();
+                done();              
             });
+
         });
 
-        it('Header Title Changes when menu item is selected', function(done) {
-           /* Obtain the header title shown on the page*/
-           var headerTitle = $('.header-title').text();
-           //console.log(headerTitle);
+        it('Header Title Changes when menu item is selected', function() {
            /* Ensure the header title displayed matches the name in the allFeeds array */
            expect(headerTitle).toEqual(allFeeds[3].name);
-           done();
         });
     });
 
@@ -168,18 +158,16 @@ $(function() {
 
         it('Menu selection shows all the four feeds', function() {
             /* click on the menu icon */
-           $('.menu-icon-link').trigger('click');
-           /* obtain all a links shown in the .feed-list DOM element */
-           var feedlist = $('.feed-list a');
-           //console.log(feedlist);
-           //console.log(feedlist.length);
-           /* check the names shown for menu selection match the names in the all Feeds array */
-           for (var i = 0; i < feedlist.length; ++i) {
-              expect(feedlist[i].innerText).toEqual(allFeeds[i].name);
-           }
-           /* This step is only for the purpose of hiding the menu list */
-           /* This is not needed for the test to pass */
-           $('.menu-icon-link').trigger('click');
+            $('.menu-icon-link').trigger('click');
+
+            /* check the names shown for menu selection match the names in the all Feeds array */
+            for (var i = 0; i < $('.feed-list a').length; ++i) {
+               var menuItem = $('.feed-list a').eq(i).text();
+               expect(menuItem).toEqual(allFeeds[i].name);
+            }
+            /* This step is only for the purpose of hiding the menu list */
+            /* This is not needed for the test to pass */
+            $('.menu-icon-link').trigger('click');
         });
     });
 }());
